@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import axios, { Axios } from "axios";
 import Image from "./Image";
 
-
+// import require from "openai";
+let prompt;
 
 export default function text() {
   const [photo, setPhoto] = useState("");
@@ -17,12 +18,11 @@ export default function text() {
   }
 
   function handleClick(event) {
-    let value = document.getElementById("bleh").value + " background";
+    let value = document.getElementById("bleh").value ;
     console.log(value);
 
     const url =
-      "https://api.unsplash.com/search/photos?page=1&query=" +value +"&client_id=" +
-clientId;
+      "https://api.unsplash.com/search/photos?page=1&query=" +value +"&client_id="+clientId;
 
 
       axios.get(url)
@@ -30,11 +30,17 @@ clientId;
         console.log(Response);
         setResult(Response.data.results);
       });
+prompt = value
   }
+
+
+
+
+// console.log(response)
 
   return (
     <>
-      <form className="max-w-2xl mx-auto">
+      <form className="max-w-2xl mx-auto" method="post">
         <div>
           <label
             htmlFor="small-input"

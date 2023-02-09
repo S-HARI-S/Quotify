@@ -8,12 +8,10 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className="font-Press h-80 text-white text-xl flex items-center justify-center">
+      <div className="font-Press h-80 text-white flex items-center justify-center text-5xl md:text-7xl lg:text-8xl">
         Quotify
       </div>
       <Text />
-
-
     </>
   );
 }

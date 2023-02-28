@@ -1,42 +1,83 @@
 import React, { useState } from "react";
 import axios, { Axios } from "axios";
-import Image from "./Image";
+import Canvas from "./Canvas";
 
-// import require from "openai";
-let prompt;
+
+let quote;
+let author ;
 
 export default function text() {
-  const [photo, setPhoto] = useState("");
-  const [clientId, setclientId] = useState(
-    "pwFOw1MP0h5mHXgZNlBdUV8DZpCf6Zay8qQLWNxfmHc"
-  );
 
-  const [result, setResult] = useState([]);
 
-  function handleChange(event) {
-    console.log("Changed");
+  
+  const [result, setResult] = useState("");
+
+const draw = (context) => {
+  const img = new Image();
+  img.src = result;
+  img.onload = () => {
+    context.drawImage(img, 0, 0);
+    context.font = "70px Arial";
+    context.fillText(quote, 400, 540);
+    context.fillText(author, 400, 640);
+
+  };
+
+
+}; 
+
+  async function DataFn(value) {
+
+
+    const client = axios.create({
+      headers: {
+        Authorization: "Bearer " + "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",
+      },
+    });
+
+    const params = {  
+      prompt: value,
+      n: 2,
+      size: "1024x1024",
+    };
+    
+client
+      .post("https://api.openai.com/v1/images/generations", params)
+      .then((Response) => {
+        console.log(Response.data.data[0]);
+      setResult(Response.data.data[0].url);
+
+      }
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+
   }
 
   function handleClick(event) {
-    let value = document.getElementById("bleh").value ;
+    let value = document.getElementById("description").value;
     console.log(value);
 
-    const url =
-      "https://api.unsplash.com/search/photos?page=1&query=" +value +"&client_id="+clientId;
+    quote = document.getElementById("quote").value;
+    console.log(quote);
+
+    author = document.getElementById("author").value;
+    console.log(author);
 
 
-      axios.get(url)
-      .then((Response) => {
-        console.log(Response);
-        setResult(Response.data.results);
-      });
-prompt = value
+
+
+
+
+  DataFn(value);
+
+
+
+
   }
 
 
-
-
-// console.log(response)
 
   return (
     <>
@@ -46,12 +87,13 @@ prompt = value
             htmlFor="small-input"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Author
+            <b>Author</b>
           </label>
           <input
+          id="author"
+            placeholder="Write author's name"
             type="text"
-
-            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="block w-full p-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
         <div className="mb-6">
@@ -59,12 +101,27 @@ prompt = value
             htmlFor="large-input"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Quote
+            <b>Quote</b>
           </label>
           <input
-            id="bleh"
-            onChange={handleChange}
+            id="quote"
             type="text"
+            placeholder="Write your quote"
+            className="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          />
+        </div>
+        <div className="mb-6">
+          <label
+            htmlFor="large-input"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+           <b>Description of background image</b>
+          </label>
+          <input
+            id="description"
+            // onChange={handleChange}
+            type="text"
+            placeholder="Describe how background image of qoute should looks like"
             className="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -78,22 +135,15 @@ prompt = value
           </button>
         </div>
       </form>
+<div className="mt-8 flex justify-center items-center">
 
-<div className="flex justify-center align-center" >
-
-  <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 py-8">
-  {result.map((photo) => (
-          <Image key={photo.id} {...photo}/>
-        ))}
-  </div>
-
+  {result.length > 0 ? (
+    <Canvas draw={draw} height={1080} width={1080} />
+  ) : (
+    <></>
+  )}
 </div>
-
-
-
-
-
-
     </>
   );
 }
+

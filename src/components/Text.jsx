@@ -3,6 +3,11 @@ import axios, { Axios } from "axios";
 import Canvas from "./Canvas";
 
 
+
+// import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+const Okey = import.meta.env.VITE_SOME_KEY
+
+
 let quote;
 let author ;
 
@@ -31,13 +36,13 @@ const draw = (context) => {
 
     const client = axios.create({
       headers: {
-        Authorization: "Bearer " + "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",
+        Authorization: "Bearer " + Okey,
       },
     });
 
     const params = {  
       prompt: value,
-      n: 2,
+      n: 1,
       size: "1024x1024",
     };
     

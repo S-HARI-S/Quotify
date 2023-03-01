@@ -3,61 +3,71 @@ import axios, { Axios } from "axios";
 import Canvas from "./Canvas";
 
 
-
-// import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-const Okey = import.meta.env.VITE_SOME_KEY
-
+const Okey = import.meta.env.VITE_SOME_KEY;
 
 let quote;
-let author ;
+let author;
 
 export default function text() {
-
-
-  
   const [result, setResult] = useState("");
 
-const draw = (context) => {
-  const img = new Image();
-  img.src = result;
-  img.onload = () => {
-    context.drawImage(img, 0, 0);
-    context.font = "70px Arial";
-    context.fillText(quote, 400, 540);
-    context.fillText(author, 400, 640);
+  const draw = (context) => {
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+      var words = text.split(" ");
+      var line = "";
 
+      for (var n = 0; n < words.length; n++) {
+        var testLine = line + words[n] + " ";
+        var metrics = context.measureText(testLine);
+        var testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+          context.fillText(line, x, y);
+          line = words[n] + " ";
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      context.fillText(line, x, y);
+      return y;
+    }
+
+    const img = new Image();
+    img.src = result;
+    img.onload = () => {
+      // img.crossOrigin="anonymous"
+      context.drawImage(img, 0, 0);
+      context.font = "20px Arial";
+      // context.fillText(quote, 200, 340);
+      let h = wrapText(context, quote, 100, 220, 350, 40);
+
+      context.font = "14px Verdana";
+      context.fillText("- " + author, 100, h+60);
+    };
   };
 
-
-}; 
-
   async function DataFn(value) {
-
-
     const client = axios.create({
       headers: {
         Authorization: "Bearer " + Okey,
       },
     });
 
-    const params = {  
+    const params = {
       prompt: value,
       n: 1,
-      size: "1024x1024",
+      size: "512x512",
     };
-    
-client
+
+    client
       .post("https://api.openai.com/v1/images/generations", params)
       .then((Response) => {
         console.log(Response.data.data[0]);
-      setResult(Response.data.data[0].url);
-
-      }
-      )
+        setResult(Response.data.data[0].url);
+      })
       .catch((err) => {
         console.log(err);
       });
-
   }
 
   function handleClick(event) {
@@ -70,19 +80,8 @@ client
     author = document.getElementById("author").value;
     console.log(author);
 
-
-
-
-
-
-  DataFn(value);
-
-
-
-
+    DataFn(value);
   }
-
-
 
   return (
     <>
@@ -95,7 +94,7 @@ client
             <b>Author</b>
           </label>
           <input
-          id="author"
+            id="author"
             placeholder="Write author's name"
             type="text"
             className="block w-full p-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -120,7 +119,7 @@ client
             htmlFor="large-input"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-           <b>Description of background image</b>
+            <b>Description of background image</b>
           </label>
           <input
             id="description"
@@ -140,15 +139,13 @@ client
           </button>
         </div>
       </form>
-<div className="mt-8 flex justify-center items-center">
-
-  {result.length > 0 ? (
-    <Canvas draw={draw} height={1080} width={1080} />
-  ) : (
-    <></>
-  )}
-</div>
+      <div className="mt-8 flex justify-center items-center ">
+        {result.length > 0 ? (
+          <Canvas draw={draw} height={512} width={512} />
+        ) : (
+          <></>
+        )}
+      </div>
     </>
   );
 }
-

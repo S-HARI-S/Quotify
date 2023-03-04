@@ -4,8 +4,11 @@
 Quotify is a web application that enables users to generate instant quote cards. It allows users to input their preferred quote, author's name, and specify their desired background image.
 
 ## Tech used 
-[React.js](https://reactjs.org/) + [Vite](https://vitejs.dev/) , [Tailwind CSS](https://tailwindcss.com/), 
-[Dalle](https://platform.openai.com/docs/introduction/overview)(open AI API) for generating images.
+* [React.js](https://reactjs.org/).
+* [Vite](https://vitejs.dev/).
+* [Tailwind CSS](https://tailwindcss.com/).
+* [Dalle](https://platform.openai.com/docs/introduction/overview)(open AI API) for generating images.
+* [Firebase](https://firebase.google.com/).
 
 ## Create development server
 

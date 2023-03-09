@@ -27,9 +27,4 @@ npm run dev
 ## Working
 Users can enter the author name , quote and a description of background image into the text box provided. These values are read and the bg image description is given as prompt to [DALLE](https://openai.com/product/dall-e-2). A response containing url of generated image is obtained and it is rendered on a HTML canvas. Then the author name , quote are also rendered on top of the image canvas.
 
-## Changes I'm working on
-* Adding a color wheel.
-* Adding a font selector.
-* Adding a download button.
-* A tool to change the position of the texts.
 

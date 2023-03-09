@@ -1,9 +1,13 @@
-*{
+* {
   padding: 0;
   margin: 0;
 }
 
-body
-{
+body {
   background-color: rgb(78, 78, 78);
+}
+
+.mobile-navbar {
+  right: 2rem;
+  top: .5rem;
 }
